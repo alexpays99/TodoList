@@ -3,6 +3,7 @@ import 'package:flutter_inherited_widget/boxes.dart';
 import 'package:flutter_inherited_widget/model/todo_model.dart';
 import 'package:flutter_inherited_widget/screens/add_todo_screen.dart';
 import 'package:flutter_inherited_widget/screens/todo_edit_screen.dart';
+import 'package:flutter_inherited_widget/widgets/search_widget.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -21,6 +22,10 @@ class _TodoScreenWidgetState extends State<TodoListScreenWidget> {
   late String title; // название задачи
   late String desctiption; // описание задачи
   final bool _isDone = false;
+  Icon customIcon = const Icon(Icons.search);
+  Widget customSearchBar = const Text('My Personal Journal');
+  final List<TodoModel> todoModel = [];
+  List<String> listModel = [];
 
   @override
   void dispose() {
@@ -58,6 +63,10 @@ class _TodoScreenWidgetState extends State<TodoListScreenWidget> {
   void _onFormSubmit() {
     Box<TodoModel> todoBox = Hive.box<TodoModel>(HiveTodoBox.todo);
     todoBox.add(TodoModel(title: title, description: desctiption));
+    todoModel.add(TodoModel(title: title, description: desctiption));
+    String todo = todoModel.map((t) => t.title).toList().join('');
+    listModel.add(todo);
+    print(listModel);
     Navigator.of(context).pop();
     print(todoBox);
   }
@@ -144,6 +153,17 @@ class _TodoScreenWidgetState extends State<TodoListScreenWidget> {
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                showSearch(context: context, delegate: Search(listModel));
+              },
+            ),
+          ),
+        ],
       ),
       body: ValueListenableBuilder(
         valueListenable: Hive.box<TodoModel>(HiveTodoBox.todo).listenable(),
@@ -196,11 +216,15 @@ class _TodoScreenWidgetState extends State<TodoListScreenWidget> {
                   child: ListTile(
                     title: Text(
                       res!.title,
-                      style: TextStyle(decoration: _isDone ? TextDecoration.lineThrough: null), 
+                      style: TextStyle(
+                          decoration:
+                              _isDone ? TextDecoration.lineThrough : null),
                     ),
                     subtitle: Text(
-                      res.description,
-                      style: TextStyle(decoration: _isDone ? TextDecoration.lineThrough: null),
+                      res.description!,
+                      style: TextStyle(
+                          decoration:
+                              _isDone ? TextDecoration.lineThrough : null),
                     ),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () {
@@ -227,3 +251,4 @@ class _TodoScreenWidgetState extends State<TodoListScreenWidget> {
     );
   }
 }
+

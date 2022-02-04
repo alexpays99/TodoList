@@ -46,7 +46,7 @@ class _TodoEditBodyState extends State<TodoEditBody> {
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
           title: Text(model.title),
-          subtitle: Text(model.description),
+          subtitle: Text(model.description!),
         ),
       ),
       floatingActionButton: FloatingActionButton(

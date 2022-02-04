@@ -12,9 +12,9 @@ class TodoModel extends HiveObject {
   final String title;
 
   @HiveField(2)
-  final String description;
+  final String? description;
 
-  TodoModel({ required this.title, required this.description });
+  TodoModel({ required this.title, this.description });
   
 
 }
